@@ -5,7 +5,7 @@
 <table class="table">
     <thead>
     <tr>
-        <th scope="col">#</th>
+        <th scope="col"><a href="/?page=<?= $page ?>&sort=id&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">#</a></th>
         <th scope="col">Username</th>
         <th scope="col">email</th>
         <th scope="col">body</th>
@@ -14,7 +14,7 @@
     <tbody>
     <?php foreach ($tasks as $task) {?>
     <tr>
-        <th scope="row"><?= $task->id?></th>
+        <td><?= $task->id()?></td>
         <td><?= $task->username?></td>
         <td><?= $task->email?></td>
         <td><?= $task->body ?></td>
@@ -25,10 +25,10 @@
 <nav>
     <ul class="pagination justify-content-center">
             <li class="page-item <?php if($page <= 1) echo 'disabled';?>">
-                <a class="page-link" href="/?page=<?=$page - 1?>">Previous</a>
+                <a class="page-link" href="/?<?='page=' . ($page - 1) . "&sort=$sort&direct=$direct"?>">Previous</a>
             </li>
             <li class="page-item <?php if(!$nextPageExists) echo 'disabled';?>">
-                <a class="page-link" href="/?page=<?=$page + 1?>">Next</a>
+                <a class="page-link" href="/?<?='page=' . ($page + 1). "&sort=$sort&direct=$direct"?>">Next</a>
             </li>
     </ul>
 </nav>

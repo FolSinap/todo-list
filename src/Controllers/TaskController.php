@@ -13,15 +13,26 @@ use Core\Validation\Validator;
 class TaskController extends Controller
 {
     protected const TASKS_PER_PAGE = 3;
+    protected const SORT_ASC = 'ASC';
+    protected const SORT_DESC = 'DESC';
 
     public function index(): Response
     {
         $request = $this->app->request();
         $page = $request->get('page') ?? 1;
+        $sort = $request->get('sort') ?? 'id';
+        $sortDirection = $request->get('direct') ?? self::SORT_ASC;
         $nextPageExists = false;
-        $tasks = (new Task($this->app->pdo()))->getForPage($page, self::TASKS_PER_PAGE, $nextPageExists);
+        $tasks = (new Task($this->app->pdo()))
+            ->getForPage($page, self::TASKS_PER_PAGE, $nextPageExists, $sort, $sortDirection);
 
-        return $this->render('home', ['tasks' => $tasks, 'nextPageExists' => $nextPageExists, 'page' => $page]);
+        return $this->render('home', [
+            'tasks' => $tasks,
+            'nextPageExists' => $nextPageExists,
+            'page' => $page,
+            'sort' => $sort,
+            'direct' => $sortDirection,
+        ]);
     }
 
     public function create(): Response

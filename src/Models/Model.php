@@ -71,12 +71,14 @@ abstract class Model
         $statement->execute();
     }
 
-    public function getForPage(int $page, int $itemsPerPage, bool &$nextPageExists): array
+    public function getForPage(int $page, int $itemsPerPage, bool &$nextPageExists, string $orderBy = 'id', string $orderDirection = 'ASC'): array
     {
-        $lastId = ($page - 1) * $itemsPerPage;
-        $statement = $this->conn->prepare('SELECT * FROM `' . $this->tableName()
-            . '` WHERE `id` > ' . $lastId
-            . ' LIMIT ' . ($itemsPerPage + 1) . ';');
+        $offset = ($page - 1) * $itemsPerPage;
+        $statement = $this->conn->prepare('SELECT * FROM `' . $this->tableName() . '`'
+            . ' ORDER BY `' . $orderBy . '` ' . $orderDirection
+            . ' LIMIT ' . ($itemsPerPage + 1)
+            . ' OFFSET ' . $offset . ';'
+        );
 
         $statement->execute();
         $items = $statement->fetchAll(PDO::FETCH_CLASS, static::class, [$this->conn]);
