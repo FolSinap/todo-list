@@ -2,16 +2,14 @@
 
 namespace Core\Models;
 
-use PDO;
-
 class Task extends Model
 {
-    public function tableName(): string
+    public static function tableName(): string
     {
         return 'tasks';
     }
 
-    public function columns(): array
+    public static function columns(): array
     {
         return [
             'username',

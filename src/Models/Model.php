@@ -9,12 +9,6 @@ abstract class Model
 {
     protected array $fields;
     protected int $id;
-    protected PDO $conn;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->conn = $pdo;
-    }
 
     public static function new(array $data = []): self
     {
@@ -27,8 +21,8 @@ abstract class Model
         return $model;
     }
 
-    abstract public function tableName(): string;
-    abstract public function columns(): array;
+    abstract public static function tableName(): string;
+    abstract public static function columns(): array;
 
     public function id(): int
     {
@@ -47,6 +41,17 @@ abstract class Model
         return $this->fields[$name] ?? null;
     }
 
+    public static function where(string $field, $value, string $operand = '='): array
+    {
+        $statement = App::app()->pdo()->prepare(
+            'SELECT * FROM ' . static::tableName() . " WHERE $field $operand :$field;"
+        );
+        $statement->bindValue(":$field", $value, self::getType($value));
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
     public function insert(): void
     {
         $prepared = [];
@@ -60,12 +65,12 @@ abstract class Model
         $columns = '(' . implode(' ,', array_keys($prepared)) . ')';
         $values = '(' . implode(' ,', array_values($prepared)) . ')';
 
-        $statement = $this->conn->prepare(
+        $statement = App::app()->pdo()->prepare(
             'INSERT INTO ' . $this->tableName() . ' ' . $columns . ' VALUES ' . $values . ';'
         );
 
         foreach ($this->fields as $field => $value) {
-            $statement->bindValue(":$field", $value, $this->getType($value));
+            $statement->bindValue(":$field", $value, self::getType($value));
         }
 
         $statement->execute();
@@ -74,14 +79,14 @@ abstract class Model
     public function getForPage(int $page, int $itemsPerPage, bool &$nextPageExists, string $orderBy = 'id', string $orderDirection = 'ASC'): array
     {
         $offset = ($page - 1) * $itemsPerPage;
-        $statement = $this->conn->prepare('SELECT * FROM `' . $this->tableName() . '`'
+        $statement = App::app()->pdo()->prepare('SELECT * FROM `' . $this->tableName() . '`'
             . ' ORDER BY `' . $orderBy . '` ' . $orderDirection
             . ' LIMIT ' . ($itemsPerPage + 1)
             . ' OFFSET ' . $offset . ';'
         );
 
         $statement->execute();
-        $items = $statement->fetchAll(PDO::FETCH_CLASS, static::class, [$this->conn]);
+        $items = $statement->fetchAll(PDO::FETCH_CLASS, static::class);
 
         if (count($items) > $itemsPerPage) {
             $nextPageExists = true;
@@ -93,7 +98,7 @@ abstract class Model
         return $items;
     }
 
-    private function getType($value): int
+    private static function getType($value): int
     {
         switch (true) {
             case is_int($value):

@@ -14,6 +14,15 @@
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/tasks/create">New Task</a>
             </li>
+            <?php if(\Core\Models\User::isLoggedIn()) { ?>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/logout">Logout</a>
+                </li>
+            <?php } else { ?>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/login">Login</a>
+                </li>
+            <?php } ?>
         </ul>
 
         <div class="container">
