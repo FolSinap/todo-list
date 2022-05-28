@@ -24,6 +24,15 @@ class Request
         return $this->method;
     }
 
+    public function get(string $name): ?string
+    {
+        if ($this->method === Router::GET) {
+            return $this->query[$name] ?? null;
+        }
+
+        return $this->body[$name] ?? null;
+    }
+
     protected function initGlobals(): void
     {
         $this->path = $_SERVER['PATH_INFO'] ?? '/';

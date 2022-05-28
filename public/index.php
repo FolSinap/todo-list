@@ -1,13 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+use Core\App;
 
-$app = Core\App::app();
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+Dotenv\Dotenv::createUnsafeImmutable(dirname(__DIR__))->load();
+
+$app = new App(dirname(__DIR__));
 $router = $app->router();
 
-$router->get('/', function () {
-    return '1213qweq';
-});
+$router->get('/', [\Core\Controllers\TaskController::class, 'index']);
 $router->get('/qwe', function () {
     return 'qwe';
 });

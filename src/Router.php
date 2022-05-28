@@ -4,8 +4,8 @@ namespace Core;
 
 class Router
 {
-    protected const GET = 'GET';
-    protected const POST = 'POST';
+    public const GET = 'GET';
+    public const POST = 'POST';
     private array $routes;
 
     public function resolve(string $method, string $uri): callable
