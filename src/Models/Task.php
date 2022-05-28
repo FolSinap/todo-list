@@ -2,6 +2,8 @@
 
 namespace Core\Models;
 
+use PDO;
+
 class Task extends Model
 {
     public function tableName(): string
