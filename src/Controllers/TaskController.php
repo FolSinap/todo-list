@@ -5,6 +5,7 @@ namespace Core\Controllers;
 use Core\Models\Task;
 use Core\RedirectResponse;
 use Core\Response;
+use Core\Session;
 use Core\Validation\Rules\EmailRule;
 use Core\Validation\Rules\NotEmptyRule;
 use Core\Validation\Validator;
@@ -49,6 +50,7 @@ class TaskController extends Controller
             'is_done' => false,
         ]);
         $task->insert();
+        Session::start()->set('success', 'Task has been created successfully!');
 
         return $this->redirect('/');
     }

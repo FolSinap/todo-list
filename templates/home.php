@@ -1,3 +1,7 @@
+<?php $session = Core\Session::start() ?>
+<?php if($session->has('success')) {?>
+    <div class="text-success"><?= $session->get('success') ?></div>
+<?php $session->unset('success');} ?>
 <table class="table">
     <thead>
     <tr>
