@@ -1,0 +1,15 @@
+{
+    "name": "folsinap/todo-list",
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maxim Svechihin",
+            "email": "folsinap@yandex.ru"
+        }
+    ],
+    "require": {}
+}
