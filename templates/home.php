@@ -19,13 +19,13 @@
     <?php foreach ($tasks as $task) {?>
     <tr>
         <td><?= $task->id()?></td>
-        <td><?= $task->username?></td>
-        <td><?= $task->email?></td>
+        <td><?= htmlspecialchars($task->username)?></td>
+        <td><?= htmlspecialchars($task->email)?></td>
         <td>
             <?php if ($task->is_edited) {?>
             <div class="text-secondary">(edited by admin)</div>
             <?php } ?>
-            <?= $task->body ?>
+            <?= htmlspecialchars($task->body) ?>
         </td>
         <td><?= $task->is_done ? 'done' : 'not done' ?></td>
         <?php if (\Core\Models\User::isLoggedIn()) { ?>
