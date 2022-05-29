@@ -11,7 +11,7 @@
         <?php foreach (Core\Validation\Validator::flashErrors('is_done') as $error) { ?>
             <div class="text-danger"><?= $error ?></div>
         <?php } ?>
-        <input type="checkbox" class="form-check-input" name="is_done" id="is_done">
+        <input type="checkbox" class="form-check-input" name="is_done" id="is_done" <?php if ($task->is_done) {echo 'checked';} ?>>
         <label class="form-check-label" for="is_done">Done!</label>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>

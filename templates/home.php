@@ -9,6 +9,7 @@
         <th scope="col"><a href="/?page=<?= $page ?>&sort=username&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">Username</a></th>
         <th scope="col"><a href="/?page=<?= $page ?>&sort=email&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">email</a></th>
         <th scope="col"><a href="/?page=<?= $page ?>&sort=body&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">body</a></th>
+        <th scope="col"><a href="/?page=<?= $page ?>&sort=is_done&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">status</a></th>
         <?php if (\Core\Models\User::isLoggedIn()) { ?>
             <th scope="col"></th>
         <?php } ?>
@@ -20,7 +21,13 @@
         <td><?= $task->id()?></td>
         <td><?= $task->username?></td>
         <td><?= $task->email?></td>
-        <td><?= $task->body ?></td>
+        <td>
+            <?php if ($task->is_edited) {?>
+            <div class="text-secondary">(edited by admin)</div>
+            <?php } ?>
+            <?= $task->body ?>
+        </td>
+        <td><?= $task->is_done ? 'done' : 'not done' ?></td>
         <?php if (\Core\Models\User::isLoggedIn()) { ?>
             <td>
                 <a href="/tasks/<?= $task->id()?>/edit">Edit</a>
