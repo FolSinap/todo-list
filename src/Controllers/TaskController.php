@@ -3,6 +3,7 @@
 namespace Core\Controllers;
 
 use Core\Models\Task;
+use Core\Models\User;
 use Core\RedirectResponse;
 use Core\Response;
 use Core\Session;
@@ -68,6 +69,10 @@ class TaskController extends Controller
 
     public function edit(int $id): Response
     {
+        if (!User::isLoggedIn()) {
+            return $this->redirect('/login');
+        }
+
         $task = Task::find($id);
 
         return $this->render('edit_task', ['task' => $task]);
@@ -75,6 +80,10 @@ class TaskController extends Controller
 
     public function update(int $id): RedirectResponse
     {
+        if (!User::isLoggedIn()) {
+            return $this->redirect('/login');
+        }
+
         $task = Task::find($id);
         $validator = new Validator([
             'body' => [new NotEmptyRule()],
@@ -88,7 +97,7 @@ class TaskController extends Controller
         $task->update([
             'body' => $request->get('body'),
             'is_done' => (bool)$request->get('is_done'),
-            'is_edited' => true,
+            'is_edited' => !($task->body === $request->get('body')),
         ]);
 
         return $this->redirect("/");

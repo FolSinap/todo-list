@@ -38,7 +38,7 @@ class AuthController extends Controller
             return $this->redirect('/');
         }
 
-        Session::start()->set('login_error', 'Wrong uername or password.');
+        Session::start()->set('login_error', 'Wrong username or password.');
 
         return $this->redirect('/login');
     }

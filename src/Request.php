@@ -11,7 +11,9 @@ class Request
 
     public function __construct()
     {
-        $this->initGlobals();
+        if (!defined('STDIN')) {
+            $this->initGlobals();
+        }
     }
 
     public function path(): string
