@@ -12,7 +12,7 @@ abstract class Model
 
     public static function new(array $data = []): self
     {
-        $model = new static(App::app()->pdo());
+        $model = new static();
 
         foreach ($data as $field => $value) {
             $model->$field = $value;
@@ -41,6 +41,17 @@ abstract class Model
         return $this->fields[$name] ?? null;
     }
 
+    public static function find(int $id): ?self
+    {
+        $models = self::where('id', $id);
+
+        if (empty($models)) {
+            return null;
+        }
+
+        return $models[0];
+    }
+
     public static function where(string $field, $value, string $operand = '='): array
     {
         $statement = App::app()->pdo()->prepare(
@@ -50,6 +61,27 @@ abstract class Model
         $statement->execute();
 
         return $statement->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
+    public function update(array $data): void
+    {
+        $prepared = '';
+
+        foreach ($data as $field => $value) {
+            $prepared .= " `$field` = :$field,";
+        }
+
+        $prepared = rtrim($prepared, ',');
+
+        $statement = App::app()->pdo()->prepare(
+            'UPDATE ' . $this->tableName() . ' SET ' . $prepared . ' WHERE `id` = ' . $this->id() . ';'
+        );
+
+        foreach ($data as $field => $value) {
+            $statement->bindValue(":$field", $value, self::getType($value));
+        }
+
+        $statement->execute();
     }
 
     public function insert(): void
@@ -76,10 +108,10 @@ abstract class Model
         $statement->execute();
     }
 
-    public function getForPage(int $page, int $itemsPerPage, bool &$nextPageExists, string $orderBy = 'id', string $orderDirection = 'ASC'): array
+    public static function getForPage(int $page, int $itemsPerPage, bool &$nextPageExists, string $orderBy = 'id', string $orderDirection = 'ASC'): array
     {
         $offset = ($page - 1) * $itemsPerPage;
-        $statement = App::app()->pdo()->prepare('SELECT * FROM `' . $this->tableName() . '`'
+        $statement = App::app()->pdo()->prepare('SELECT * FROM `' . static::tableName() . '`'
             . ' ORDER BY `' . $orderBy . '` ' . $orderDirection
             . ' LIMIT ' . ($itemsPerPage + 1)
             . ' OFFSET ' . $offset . ';'

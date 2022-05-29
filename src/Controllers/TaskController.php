@@ -23,8 +23,7 @@ class TaskController extends Controller
         $sort = $request->get('sort') ?? 'id';
         $sortDirection = $request->get('direct') ?? self::SORT_ASC;
         $nextPageExists = false;
-        $tasks = (new Task($this->app->pdo()))
-            ->getForPage($page, self::TASKS_PER_PAGE, $nextPageExists, $sort, $sortDirection);
+        $tasks = Task::getForPage($page, self::TASKS_PER_PAGE, $nextPageExists, $sort, $sortDirection);
 
         return $this->render('home', [
             'tasks' => $tasks,
@@ -59,10 +58,39 @@ class TaskController extends Controller
             'email' => $request->get('email'),
             'body' => $request->get('body'),
             'is_done' => false,
+            'is_edited' => false,
         ]);
         $task->insert();
         Session::start()->set('success', 'Task has been created successfully!');
 
         return $this->redirect('/');
+    }
+
+    public function edit(int $id): Response
+    {
+        $task = Task::find($id);
+
+        return $this->render('edit_task', ['task' => $task]);
+    }
+
+    public function update(int $id): RedirectResponse
+    {
+        $task = Task::find($id);
+        $validator = new Validator([
+            'body' => [new NotEmptyRule()],
+        ]);
+        $request = $this->app->request();
+
+        if (!$validator->validate($request->getAll())) {
+            return $this->redirect("/tasks/$id/edit");
+        }
+
+        $task->update([
+            'body' => $request->get('body'),
+            'is_done' => (bool)$request->get('is_done'),
+            'is_edited' => true,
+        ]);
+
+        return $this->redirect("/");
     }
 }

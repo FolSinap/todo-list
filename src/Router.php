@@ -10,8 +10,8 @@ class Router
 
     public function resolve(string $method, string $uri): callable
     {
-        if (array_key_exists($uri, $this->routes) && array_key_exists($method, $this->routes[$uri])) {
-            return $this->routes[$uri][$method];
+        if ($route = $this->findRoute($uri, $method)) {
+            return $route->getCallback();
         }
 
         return function () {
@@ -21,11 +21,27 @@ class Router
 
     public function get(string $uri, callable $func): void
     {
-        $this->routes[$uri][self::GET] = $func;
+        $this->addRoute($uri, Route::GET, $func);
     }
 
     public function post(string $uri, callable $func): void
     {
-        $this->routes[$uri][self::POST] = $func;
+        $this->addRoute($uri, Route::POST, $func);
+    }
+
+    public function findRoute(string $url, string $verb): ?Route
+    {
+        foreach ($this->routes as $route) {
+            if ($route->match($url, $verb)) {
+                return $route;
+            }
+        }
+
+        return null;
+    }
+
+    protected function addRoute(string $url, string $method, $callback): void
+    {
+        $this->routes[] = new Route($url, $callback, $method);
     }
 }

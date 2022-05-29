@@ -6,9 +6,12 @@
     <thead>
     <tr>
         <th scope="col"><a href="/?page=<?= $page ?>&sort=id&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">#</a></th>
-        <th scope="col">Username</th>
-        <th scope="col">email</th>
-        <th scope="col">body</th>
+        <th scope="col"><a href="/?page=<?= $page ?>&sort=username&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">Username</a></th>
+        <th scope="col"><a href="/?page=<?= $page ?>&sort=email&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">email</a></th>
+        <th scope="col"><a href="/?page=<?= $page ?>&sort=body&direct=<?= $direct === 'ASC' ? 'DESC' : 'ASC' ?>">body</a></th>
+        <?php if (\Core\Models\User::isLoggedIn()) { ?>
+            <th scope="col"></th>
+        <?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -18,6 +21,11 @@
         <td><?= $task->username?></td>
         <td><?= $task->email?></td>
         <td><?= $task->body ?></td>
+        <?php if (\Core\Models\User::isLoggedIn()) { ?>
+            <td>
+                <a href="/tasks/<?= $task->id()?>/edit">Edit</a>
+            </td>
+        <?php } ?>
     </tr>
     <?php } ?>
     </tbody>

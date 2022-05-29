@@ -14,6 +14,8 @@ $router = $app->router();
 $router->get('/', [TaskController::class, 'index']);
 $router->get('/tasks/create', [TaskController::class, 'create']);
 $router->post('/tasks/create', [TaskController::class, 'store']);
+$router->get('/tasks/{id}/edit', [TaskController::class, 'edit']);
+$router->post('/tasks/{id}/edit', [TaskController::class, 'update']);
 $router->get('/login', [AuthController::class, 'index']);
 $router->post('/login', [AuthController::class, 'login']);
 $router->get('/logout', [AuthController::class, 'logout']);

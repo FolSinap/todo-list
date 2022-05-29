@@ -35,13 +35,7 @@ class App
     {
         $callable = $this->router->resolve($this->request->method(), $this->request->path());
 
-        if (is_array($callable)) {
-            $controller = new $callable[0]();
-            $method = $callable[1];
-            $response = $controller->$method();
-        } else {
-            $response = $callable();
-        }
+        $response = $callable();
 
         if (is_string($response)) {
             $response = Response::ok($response);
